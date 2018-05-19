@@ -32,6 +32,10 @@ $nodes = new \Eslider\NodeManager($nodeInfos);
         .wallet-address {
             font-style: italic;
         }
+
+        .error-message {
+            font-weight: bold;
+        }
     </style>
 </head>
 <body>
@@ -62,41 +66,59 @@ $nodes = new \Eslider\NodeManager($nodeInfos);
     </thead>
     <tbody>
     <?php foreach ($nodes as $node) {
-        $status = $node->getStatus();
-        $chainInfo = $node->getBlockChainInfo();
-        ?>
-        <tr>
-            <td><?= $node->getName() ?></td>
-            <td><?= str_replace(' ', '<br/>', $node->getIPAddress())?></td>
-            <td><?= $status['AssetName'] ?></td>
-            <td><?= date('Y-m-d H:i:s', $status['AssetStartTime']) ?></td>
-            <td><?= $status['Attempt'] ?></td>
-            <td><?= $status['IsBlockchainSynced'] ? 'yes' : 'no' ?></td>
-            <td><?= $status['IsMasternodeListSynced'] ? 'yes' : 'no' ?></td>
-            <td><?= $status['IsWinnersListSynced'] ? 'yes' : 'no' ?></td>
-            <td><?= $status['IsSynced'] ? 'yes' : 'no' ?></td>
-            <td><?= $status['IsFailed'] ? 'yes' : 'no'?></td>
-            <td><?= $chainInfo['blocks'] ?></td>
-            <td><?= $chainInfo['headers'] ?></td>
-            <td><?=  $node->isBlockGenerationOn()?'yes':'no' ?></td>
-            <td><?= date('Y-m-d H:i:s', $chainInfo['mediantime']) ?></td>
-            <td><?= round($chainInfo['verificationprogress'] * 100, 4) ?>%</td>
-            <td><?= $node->getBalance() ?></td>
-            <td><?php foreach ($chainInfo['softforks'] as $fork) { ?>
-                    <span><?= $fork['id'] ?> v.<?= $fork['version'] ?></span><br/>
-                <?php } ?>
-            </td>
-            <td><?php foreach ($node->listAddressGroupings() as $addressGrouping) {
-                    foreach ($addressGrouping as $addressInfo) {
-                        list($address, $amount) = $addressInfo;
-                        ?>
-                        <span class="wallet-address"><?= $address?></span> : <span class="amount"><?= $amount?></span> <br/>
-                    <?php }
-                } ?>
-            </td>
+        try {
+            $status               = $node->getStatus();
+            $chainInfo            = $node->getBlockChainInfo();
+            $isBlockGenerationOn  = $node->isBlockGenerationOn();
+            $balance              = $node->getBalance();
+            $listAddressGroupings = $node->listAddressGroupings();
+            ?>
+            <tr>
+                <td><?= $node->getName() ?></td>
+                <td><?= str_replace(' ', '<br/>', $node->getIPAddress()) ?></td>
+                <td><?= $status['AssetName'] ?></td>
+                <td><?= date('Y-m-d H:i:s', $status['AssetStartTime']) ?></td>
+                <td><?= $status['Attempt'] ?></td>
+                <td><?= $status['IsBlockchainSynced'] ? 'yes' : 'no' ?></td>
+                <td><?= $status['IsMasternodeListSynced'] ? 'yes' : 'no' ?></td>
+                <td><?= $status['IsWinnersListSynced'] ? 'yes' : 'no' ?></td>
+                <td><?= $status['IsSynced'] ? 'yes' : 'no' ?></td>
+                <td><?= $status['IsFailed'] ? 'yes' : 'no' ?></td>
+                <td><?= $chainInfo['blocks'] ?></td>
+                <td><?= $chainInfo['headers'] ?></td>
+                <td><?=
+                    $isBlockGenerationOn ? 'yes' : 'no' ?></td>
+                <td><?= date('Y-m-d H:i:s', $chainInfo['mediantime']) ?></td>
+                <td><?= round($chainInfo['verificationprogress'] * 100, 4) ?>%</td>
+                <td><?=
+                    $balance ?></td>
+                <td><?php foreach ($chainInfo['softforks'] as $fork) { ?>
+                        <span><?= $fork['id'] ?> v.<?= $fork['version'] ?></span><br/>
+                    <?php } ?>
+                </td>
+                <td><?php
+                    foreach ($listAddressGroupings as $addressGrouping) {
+                        foreach ($addressGrouping as $addressInfo) {
+                            list($address, $amount) = $addressInfo;
+                            ?>
+                            <span class="wallet-address"><?= $address ?></span> : <span
+                                    class="amount"><?= $amount ?></span> <br/>
+                        <?php }
+                    } ?>
+                </td>
 
-        </tr>
-    <?php } ?>
+            </tr>
+            <?php
+        } catch (Exception $e) {
+            ?>
+            <tr>
+                <td><?= $node->getName() ?></td>
+                <td><?= str_replace(' ', '<br/>', $node->getIPAddress()) ?></td>
+                <td colspan="20"><span>Server error:</span> <span class="error-message"><?= $e->getMessage() ?></span></td>
+            </tr>>
+            <?php
+        }
+    } ?>
     </tbody>
 </table>
 </body>

@@ -21,7 +21,7 @@ class NodeService
             $this->{$key} = $value;
         }
 
-        $this->isShell = strpos($this->apiUrl, "sh://") === 0;
+        $this->isShell = strpos($this->apiUrl, 'sh://') === 0;
         if ($this->isShell) {
             $this->apiUrl = substr($this->apiUrl, 5);
         }
@@ -50,12 +50,18 @@ class NodeService
                 }, $args));
 
             $result = trim(`$cmd 2>&1`);
-            if (strpos($result, 'Error:') === 0) {
+            if (strpos($result, 'Error:') === 0 || preg_match( '/ not found$/', $result) ) {
                 throw  new \Exception($result);
             }
         } else {
             $url    = $this->apiUrl . rawurlencode($args);
-            $result = trim(file_get_contents($url));
+            $result = @file_get_contents($url);
+            if (!$result) {
+                $error = error_get_last();
+                throw new \Exception($error['message']);
+            }
+
+            $result = trim($result);
         }
 
         if ($json) {
