@@ -32,6 +32,7 @@ $nodes = new \Eslider\NodeManager($nodeInfos);
     <thead>
     <tr>
         <th scope="col">Name</th>
+        <th scope="col">IP Address</th>
         <th scope="col">Status</th>
         <th scope="col">Started</th>
         <th scope="col">Attempt</th>
@@ -56,6 +57,7 @@ $nodes = new \Eslider\NodeManager($nodeInfos);
         ?>
         <tr>
             <td><?= $node->getName() ?></td>
+            <td><?= $node->getIPAddress() ?></td>
             <td><?= $status['AssetName'] ?></td>
             <td><?= date('Y-m-d H:i:s', $status['AssetStartTime']) ?></td>
             <td><?= $status['Attempt'] ?></td>

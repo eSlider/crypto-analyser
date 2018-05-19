@@ -119,4 +119,13 @@ class NodeService
         $status['name'] = $url['host'];
         return $url['host'];
     }
+
+    /**
+     * Get IP Address
+     * @return mixed
+     */
+    public function getIPAddress(){
+        $dnsName = $this->getName();
+        return `dig +short $dnsName`;
+    }
 }
