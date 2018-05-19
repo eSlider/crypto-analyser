@@ -7,6 +7,9 @@ class NodeService
     /** @var string API Node URL */
     public $apiUrl;
 
+    /** @var string Node name */
+    public $name;
+
     /** @var boolean Is shell */
     public $isShell = false;
 
@@ -50,7 +53,7 @@ class NodeService
                 }, $args));
 
             $result = trim(`$cmd 2>&1`);
-            if (strpos($result, 'Error:') === 0 || preg_match( '/ not found$/', $result) ) {
+            if (strpos($result, 'Error:') === 0 || preg_match('/ not found$/', $result)) {
                 throw  new \Exception($result);
             }
         } else {
@@ -170,8 +173,10 @@ class NodeService
      */
     public function getName()
     {
-        if ($this->isShell) {
-            $name =gethostname(); ;
+        if ($this->name) {
+            $name = $this->name;
+        } elseif ($this->isShell) {
+            $name = gethostname();
         } else {
             $url  = parse_url($this->apiUrl);
             $name = $url['host'];
