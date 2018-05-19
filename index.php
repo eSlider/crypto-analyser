@@ -64,7 +64,6 @@ $nodes = new \Eslider\NodeManager($nodeInfos);
             <td><?= $status['IsSynced'] ? 'yes' : 'no' ?></td>
             <td><?= $status['IsFailed'] ?></td>
         </tr>
-
     <?php } ?>
     </tbody>
 </table>
