@@ -187,8 +187,7 @@ class NodeService
     public function getIPAddress()
     {
         if ($this->isShell) {
-            preg_match_all('/inet addr:(\S+)/s', `ifconfig`, $matches, PREG_SET_ORDER);
-            return implode(' ', array_map(function ($match) { return $match[1]; }, $matches));
+            return `hostname --ip-address`;
         }
         $dnsName = $this->getName();
         return `dig +short $dnsName`;
