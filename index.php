@@ -144,10 +144,12 @@ $connectedNodes = [];
     </tr>
     <?php $i=0; foreach ($connectedNodes as $node) {
         $i++;
+        $ipAddress = explode(':', $node['addr'])[0];
         ?>
         <tr>
             <td><?= $i ?></td>
-            <td><a href="https://www.ipalyzer.com/<?= explode(':', $node['addr'])[0] ?>" target="_blank"><?= $node['addr']?></td>
+            <td><a href="https://www.ipalyzer.com/<?=
+                $ipAddress ?>" target="_blank"><?= $node['addr']?></td>
             <td><?= $node['synced_blocks'] ?></td>
             <td><?= $node['synced_headers'] ?></td>
 
