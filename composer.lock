@@ -4,8 +4,8 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "hash": "bc9a250825adb6a64b22f9ff7e1ea8bf",
-    "content-hash": "b50d10b6d271d180eea1fc9d6a7585f5",
+    "hash": "cd8b029ad7e90cf413c4620040cc8b93",
+    "content-hash": "b3a601d0dbdde3ce53e9d760d0916a45",
     "packages": [
         {
             "name": "eslider/spatialite",
