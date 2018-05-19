@@ -133,7 +133,8 @@ $connectedNodes = [];
     </tbody>
 </table>
 
-<h1>Connected nodes</h1>
+<a name="connected-nodes" href="#connected-nodes"><h1>Connected nodes</h1></a>
+
 <table class="table table-stripped">
     <tr>
         <th>Nr</th>
@@ -146,9 +147,9 @@ $connectedNodes = [];
         ?>
         <tr>
             <td><?= $i ?></td>
-            <td style="width: 33%;"><a href="https://www.ipalyzer.com/<?= explode(':', $node['addr'])[0] ?>" target="_blank"><?= $node['addr']?></td>
-            <td style="width: 33%;"><?= $node['synced_blocks'] ?></td>
-            <td style="width: 33%;"><?= $node['synced_headers'] ?></td>
+            <td><a href="https://www.ipalyzer.com/<?= explode(':', $node['addr'])[0] ?>" target="_blank"><?= $node['addr']?></td>
+            <td><?= $node['synced_blocks'] ?></td>
+            <td><?= $node['synced_headers'] ?></td>
 
         </tr>
     <?php } ?>
