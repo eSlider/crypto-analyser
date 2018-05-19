@@ -24,10 +24,15 @@ $nodes = new \Eslider\NodeManager($nodeInfos);
     <script src="//maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"></script>
 
     <title>Blockchain info</title>
+    <style type="text/css">
+        .amount {
+            font-weight: bold;
+        }
+    </style>
 </head>
 <body>
 
-<h1>Status</h1>
+<h1>Nodes Status</h1>
 <table class="table table-striped">
     <thead>
     <tr>
@@ -48,6 +53,7 @@ $nodes = new \Eslider\NodeManager($nodeInfos);
         <th scope="col">Verification</th>
         <th scope="col">Balance</th>
         <th scope="col">Soft-Forks</th>
+        <th scope="col">Addresses</th>
     </tr>
     </thead>
     <tbody>
@@ -65,7 +71,7 @@ $nodes = new \Eslider\NodeManager($nodeInfos);
             <td><?= $status['IsMasternodeListSynced'] ? 'yes' : 'no' ?></td>
             <td><?= $status['IsWinnersListSynced'] ? 'yes' : 'no' ?></td>
             <td><?= $status['IsSynced'] ? 'yes' : 'no' ?></td>
-            <td><?= $status['IsFailed'] ?></td>
+            <td><?= $status['IsFailed'] ? 'yes' : 'no'?></td>
             <td><?= $chainInfo['blocks'] ?></td>
             <td><?= $chainInfo['headers'] ?></td>
             <td><?=  $node->isBlockGenerationOn()?'yes':'no' ?></td>
@@ -75,6 +81,14 @@ $nodes = new \Eslider\NodeManager($nodeInfos);
             <td><?php foreach ($chainInfo['softforks'] as $fork) { ?>
                     <span><?= $fork['id'] ?> v.<?= $fork['version'] ?></span><br/>
                 <?php } ?>
+            </td>
+            <td><?php foreach ($node->listAddressGroupings() as $addressGrouping) {
+                    foreach ($addressGrouping as $addressInfo) {
+                        list($address, $amount) = $addressInfo;
+                        ?>
+                        <span class="wallet-address"><?= $address?></span> : <span class="amount"><?= $amount?></span> <br/>
+                    <?php }
+                } ?>
             </td>
 
         </tr>

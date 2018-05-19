@@ -58,27 +58,28 @@ class NodeService
 
 
     /**
+     * Get wallet full balance
      *
      * If account is not specified, returns the server's total available balance.
      * If account is specified (DEPRECATED), returns the balance in the account.
      * Note that the account "" is not the same as leaving the parameter out.
      * The server total may be different to the balance in the default "" account.
      *
-     * Arguments:
-     * 1. "account"        (string, optional) DEPRECATED. The selected account, or "*" for entire wallet.
-     *                      It may be the default account using "".
-     * 2. minconf          (numeric, optional, default=1) Only include transactions confirmed at least this many times.
-     * 3. addlockconf      (bool, optional, default=false) Whether to add 5 confirmations
-     *                     to transactions locked via InstantSend.
-     * 4. includeWatchonly (bool, optional, default=false) Also include balance in watchonly addresses
-     *                     (see 'importaddress')
+     * @param string $account          (optional) DEPRECATED. The selected account, or "*" for entire wallet. It may be
+     *                                 the default account using "".
+     * @param int    $minconf          (numeric, optional, default=1) Only include transactions confirmed at least this
+     *                                 many times.
+     * @param bool   $addlockconf      (optional, default=false) Whether to add 5 confirmations
+     *                                 to transactions locked via InstantSend.
+     * @param bool   $includeWatchonly (optional, default=false) Also include balance in watchonly addresses (see
+     *                                 'importaddress')
      *
-     * @return array|string
+     * @return float
      */
-    public function getBalance($accoint = '*', $minconf = 1, $addlockconf = false, $includeWatchonly = false)
+    public function getBalance($account = '*', $minconf = 1, $addlockconf = false, $includeWatchonly = false)
     {
         return $this->query('getbalance'
-            . ' "' . $accoint. '"'
+            . ' "' . $account . '"'
             . ' ' . $minconf
             . ' ' . ($addlockconf ? 'true' : 'false')
             . ' ' . ($includeWatchonly ? 'true' : 'false')
@@ -109,9 +110,20 @@ class NodeService
     }
 
     /**
+     * Lists groups of addresses which have had their common ownership
+     * made public by common use as inputs or as the resulting change
+     * in past transactions
+     */
+    public function listAddressGroupings()
+    {
+        $res = $this->query('listaddressgroupings', true);
+        return $res;
+    }
+
+    /**
      * Get node name
      *
-     * @return string
+     * @return string DNS name
      */
     public function getName()
     {
@@ -122,9 +134,11 @@ class NodeService
 
     /**
      * Get IP Address
-     * @return mixed
+     *
+     * @return string IP address
      */
-    public function getIPAddress(){
+    public function getIPAddress()
+    {
         $dnsName = $this->getName();
         return `dig +short $dnsName`;
     }
