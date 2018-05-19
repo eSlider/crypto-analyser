@@ -28,6 +28,10 @@ $nodes = new \Eslider\NodeManager($nodeInfos);
         .amount {
             font-weight: bold;
         }
+
+        .wallet-address {
+            font-style: italic;
+        }
     </style>
 </head>
 <body>
@@ -63,7 +67,7 @@ $nodes = new \Eslider\NodeManager($nodeInfos);
         ?>
         <tr>
             <td><?= $node->getName() ?></td>
-            <td><?= $node->getIPAddress() ?></td>
+            <td><?= str_replace(' ', '<br/>', $node->getIPAddress())?></td>
             <td><?= $status['AssetName'] ?></td>
             <td><?= date('Y-m-d H:i:s', $status['AssetStartTime']) ?></td>
             <td><?= $status['Attempt'] ?></td>

@@ -7,6 +7,9 @@ class NodeService
     /** @var string API Node URL */
     public $apiUrl;
 
+    /** @var boolean Is shell */
+    public $isShell = false;
+
     /**
      * NodeService constructor.
      *
@@ -17,6 +20,11 @@ class NodeService
         foreach ($args as $key => $value) {
             $this->{$key} = $value;
         }
+
+        $this->isShell = strpos($this->apiUrl, "sh://") === 0;
+        if ($this->isShell) {
+            $this->apiUrl = substr($this->apiUrl, 5);
+        }
     }
 
     /**
@@ -25,21 +33,43 @@ class NodeService
      * @param string $args
      * @param bool   $json Convert JSON result to Array?
      * @return string|array
+     * @throws \Exception
      */
     public function query($args, $json = true)
     {
-        $url      = $this->apiUrl . rawurlencode($args);
-        $contents = trim(file_get_contents($url));
-        if ($json) {
-            $contents = json_decode($contents, true);
+        $result = null;
+
+        if ($this->isShell) {
+
+            if (is_string($args)) {
+                $args = explode(' ', $args);
+            }
+
+            $cmd = $this->apiUrl . ' ' . implode(' ', array_map(function ($arg) {
+                    return "'" . escapeshellarg($arg) . "'";
+                }, $args));
+
+            $result = trim(`$cmd 2>&1`);
+            if (strpos($result, 'Error:') === 0) {
+                throw  new \Exception($result);
+            }
+        } else {
+            $url    = $this->apiUrl . rawurlencode($args);
+            $result = trim(file_get_contents($url));
         }
-        return $contents;
+
+        if ($json) {
+            $result = json_decode($result, true);
+        }
+
+        return $result;
     }
 
     /**
      * Get node status info
      *
      * @return array|string
+     * @throws \Exception
      */
     public function getStatus()
     {
@@ -50,6 +80,7 @@ class NodeService
      * Get node status info
      *
      * @return array|string
+     * @throws \Exception
      */
     public function getBlockChainInfo()
     {
@@ -75,6 +106,7 @@ class NodeService
      *                                 'importaddress')
      *
      * @return float
+     * @throws \Exception
      */
     public function getBalance($account = '*', $minconf = 1, $addlockconf = false, $includeWatchonly = false)
     {
@@ -90,6 +122,7 @@ class NodeService
      * Get node status info
      *
      * @return array|string
+     * @throws \Exception
      */
     public function get()
     {
@@ -103,6 +136,8 @@ class NodeService
      *
      * Result
      * true|false      (boolean) If the server is set to generate coins or not
+     *
+     * @throws \Exception
      */
     public function isBlockGenerationOn()
     {
@@ -113,6 +148,8 @@ class NodeService
      * Lists groups of addresses which have had their common ownership
      * made public by common use as inputs or as the resulting change
      * in past transactions
+     *
+     * @throws \Exception
      */
     public function listAddressGroupings()
     {
@@ -127,9 +164,13 @@ class NodeService
      */
     public function getName()
     {
-        $url            = parse_url($this->apiUrl);
-        $status['name'] = $url['host'];
-        return $url['host'];
+        if ($this->isShell) {
+            $name =gethostname(); ;
+        } else {
+            $url  = parse_url($this->apiUrl);
+            $name = $url['host'];
+        }
+        return $name;
     }
 
     /**
@@ -139,6 +180,10 @@ class NodeService
      */
     public function getIPAddress()
     {
+        if ($this->isShell) {
+            preg_match_all('/inet addr:(\S+)/s', `ifconfig`, $matches, PREG_SET_ORDER);
+            return implode(' ', array_map(function ($match) { return $match[1]; }, $matches));
+        }
         $dnsName = $this->getName();
         return `dig +short $dnsName`;
     }
