@@ -146,7 +146,7 @@ $connectedNodes = [];
         ?>
         <tr>
             <td><?= $i ?></td>
-            <td style="width: 33%;"><?= $node['addr'] ?></td>
+            <td style="width: 33%;"><a href="https://www.ipalyzer.com/<?= $node['addr'] ?>" target="_blank"><?= $node['addr'] ?></td>
             <td style="width: 33%;"><?= $node['synced_blocks'] ?></td>
             <td style="width: 33%;"><?= $node['synced_headers'] ?></td>
 
