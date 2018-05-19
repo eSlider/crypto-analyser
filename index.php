@@ -138,13 +138,18 @@ $connectedNodes = [];
     <tr>
         <th>Nr</th>
         <th>IP Addresses:port</th>
+        <th>Blocks</th>
+        <th>Headers</th>
     </tr>
     <?php $i=0; foreach ($connectedNodes as $node) {
         $i++;
         ?>
         <tr>
             <td><?= $i ?></td>
-            <td style="width: 100%;"><?= $node['addr'] ?></td>
+            <td style="width: 33%;"><?= $node['addr'] ?></td>
+            <td style="width: 33%;"><?= $node['synced_blocks'] ?></td>
+            <td style="width: 33%;"><?= $node['synced_headers'] ?></td>
+
         </tr>
     <?php } ?>
 </table>
