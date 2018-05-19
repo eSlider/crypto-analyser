@@ -62,6 +62,7 @@ $nodes = new \Eslider\NodeManager($nodeInfos);
         <th scope="col">Balance</th>
         <th scope="col">Soft-Forks</th>
         <th scope="col">Addresses</th>
+        <th scope="col">Connected Nodes</th>
     </tr>
     </thead>
     <tbody>
@@ -72,6 +73,7 @@ $nodes = new \Eslider\NodeManager($nodeInfos);
             $isBlockGenerationOn  = $node->isBlockGenerationOn();
             $balance              = $node->getBalance();
             $listAddressGroupings = $node->listAddressGroupings();
+            $peers                = $node->getPeers();
             ?>
             <tr>
                 <td><?= $node->getName() ?></td>
@@ -106,6 +108,11 @@ $nodes = new \Eslider\NodeManager($nodeInfos);
                         <?php }
                     } ?>
                 </td>
+                <td>
+                    <?php foreach ($peers as $peer) { ?>
+                        <?= $peer['addr'] ?> <br/>
+                    <?php } ?>
+                </td>
 
             </tr>
             <?php
@@ -114,7 +121,8 @@ $nodes = new \Eslider\NodeManager($nodeInfos);
             <tr>
                 <td><?= $node->getName() ?></td>
                 <td><?= str_replace(' ', '<br/>', $node->getIPAddress()) ?></td>
-                <td colspan="20"><span>Server error:</span> <span class="error-message"><?= $e->getMessage() ?></span></td>
+                <td colspan="20"><span>Server error:</span> <span class="error-message"><?= $e->getMessage() ?></span>
+                </td>
             </tr>>
             <?php
         }

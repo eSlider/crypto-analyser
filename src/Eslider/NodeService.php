@@ -197,4 +197,13 @@ class NodeService
         $dnsName = $this->getName();
         return `dig +short $dnsName`;
     }
+
+    /**
+     * @return array|string
+     * @throws \Exception
+     */
+    public function getPeers()
+    {
+        return $this->query('getpeerinfo');
+    }
 }
