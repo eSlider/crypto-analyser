@@ -6,7 +6,8 @@ error_reporting(E_ALL);
 include 'vendor/autoload.php';
 include 'config.php';
 
-$nodes = new \Eslider\NodeManager($nodeInfos);
+$nodes          = new \Eslider\NodeManager($nodeInfos);
+$connectedNodes = [];
 
 ?>
 <!doctype html>
@@ -109,7 +110,9 @@ $nodes = new \Eslider\NodeManager($nodeInfos);
                     } ?>
                 </td>
                 <td>
-                    <?php foreach ($peers as $peer) { ?>
+                    <?php foreach ($peers as $peer) {
+                        $connectedNodes[ $peer['addr'] ] = $peer;
+                        ?>
                         <?= $peer['addr'] ?> <br/>
                     <?php } ?>
                 </td>
@@ -129,6 +132,23 @@ $nodes = new \Eslider\NodeManager($nodeInfos);
     } ?>
     </tbody>
 </table>
+
+<h1>Connected nodes</h1>
+<table class="table table-stripped">
+    <tr>
+        <th>Nr</th>
+        <th>IP Addresses:port</th>
+    </tr>
+    <?php $i=0; foreach ($connectedNodes as $node) {
+        $i++;
+        ?>
+        <tr>
+            <td><?= $i ?></td>
+            <td style="width: 100%;"><?= $node['addr'] ?></td>
+        </tr>
+    <?php } ?>
+</table>
+
 </body>
 </html>
 </html>
