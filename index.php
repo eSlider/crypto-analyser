@@ -40,14 +40,22 @@ $nodes = new \Eslider\NodeManager($nodeInfos);
         <th scope="col">WinnersListSynced</th>
         <th scope="col">Synced</th>
         <th scope="col">Failed</th>
+        <th scope="col">Blocks</th>
+        <th scope="col">Headers</th>
+        <th scope="col">Generation?</th>
+        <th scope="col">Mediantime</th>
+        <th scope="col">Verification</th>
+        <th scope="col">Balance</th>
+        <th scope="col">Soft-Forks</th>
     </tr>
     </thead>
     <tbody>
     <?php foreach ($nodes as $node) {
         $status = $node->getStatus();
+        $chainInfo = $node->getBlockChainInfo();
         ?>
         <tr>
-            <td><?= $node->getName()?></td>
+            <td><?= $node->getName() ?></td>
             <td><?= $status['AssetName'] ?></td>
             <td><?= date('Y-m-d H:i:s', $status['AssetStartTime']) ?></td>
             <td><?= $status['Attempt'] ?></td>
@@ -56,6 +64,17 @@ $nodes = new \Eslider\NodeManager($nodeInfos);
             <td><?= $status['IsWinnersListSynced'] ? 'yes' : 'no' ?></td>
             <td><?= $status['IsSynced'] ? 'yes' : 'no' ?></td>
             <td><?= $status['IsFailed'] ?></td>
+            <td><?= $chainInfo['blocks'] ?></td>
+            <td><?= $chainInfo['headers'] ?></td>
+            <td><?=  $node->isBlockGenerationOn()?'yes':'no' ?></td>
+            <td><?= date('Y-m-d H:i:s', $chainInfo['mediantime']) ?></td>
+            <td><?= round($chainInfo['verificationprogress'] * 100, 4) ?>%</td>
+            <td><?= $node->getBalance() ?></td>
+            <td><?php foreach ($chainInfo['softforks'] as $fork) { ?>
+                    <span><?= $fork['id'] ?> v.<?= $fork['version'] ?></span><br/>
+                <?php } ?>
+            </td>
+
         </tr>
     <?php } ?>
     </tbody>
