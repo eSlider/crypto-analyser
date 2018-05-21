@@ -11,7 +11,10 @@ class NodeService
     public $name;
 
     /** @var boolean Is shell */
-    public $isShell = false;
+    public  $isShell = false;
+
+    /** @var bool Is remote shell */
+    private $isRemoteShell;
 
     /**
      * NodeService constructor.
@@ -28,6 +31,11 @@ class NodeService
         if ($this->isShell) {
             $this->apiUrl = substr($this->apiUrl, 5);
         }
+
+        $this->isRemoteShell = strpos($this->apiUrl, 'ssh://') === 0;
+        if ($this->isRemoteShell) {
+            $this->url = parse_url($this->apiUrl);
+        }
     }
 
     /**
@@ -41,8 +49,16 @@ class NodeService
     public function query($args, $json = true)
     {
         $result = null;
-
-        if ($this->isShell) {
+        if($this->isRemoteShell){
+            if (is_string($args)) {
+                $args = explode(' ', $args);
+            }
+            $query   = implode(' ', array_map('escapeshellarg', $args));
+            $spliter = ':-start-ssh-output-:';
+            $cmd     = 'ssh ' . $this->url['user'] . '@' . $this->url['host'] . '<<-"REMOTEQUERY"' . "\n" . 'echo "' . $spliter . '";' . $this->url['query'] . ' ' . $query . " 2>&1\nREMOTEQUERY";
+            $result  = explode($spliter, `$cmd`)[1];
+            $result  = trim($result);
+        }elseif ($this->isShell) {
 
             if (is_string($args)) {
                 $args = explode(' ', $args);
