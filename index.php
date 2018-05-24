@@ -62,7 +62,7 @@ $connectedNodes = [];
         <th scope="col">Verification</th>
         <th scope="col">Balance</th>
         <th scope="col">Soft-Forks</th>
-        <th scope="col">Addresses</th>
+        <th scope="col">Wallets</th>
         <th scope="col">Connected Nodes</th>
     </tr>
     </thead>
