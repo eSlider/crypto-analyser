@@ -147,18 +147,27 @@ foreach ($connectedNodes as $node) {
     <th>IP Addresses:port</th>
     <th>Blocks</th>
     <th>Headers</th>
+    <th>Connected at</th>
+    <th>Version</th>
+    <th>Sub. Version</th>
+    <th>Banscore</th>
   </tr>
     <?php $i = 0;
     foreach ($uniqueNodes as $node) {
         $i++;
-        $ipAddress = explode(':', $node['addr'])[0];
+        preg_match('/(.+?):(\d+)$/', $node['addr'], $matches);
+        $ipAddress = $matches[1];
         ?>
       <tr>
         <td><?= $i ?></td>
         <td><a href="https://www.ipalyzer.com/<?=
-            $ipAddress ?>" target="_blank"><?= $node['addr'] ?></td>
+            $ipAddress ?>" target="_blank"><?= $ipAddress ?></td>
         <td><?= $node['synced_blocks'] ?></td>
         <td><?= $node['synced_headers'] ?></td>
+        <td><?= date('Y-m-d H:i:s', $node['conntime']) ?></td>
+        <td><?= $node['version'] ?></td>
+        <td><?= $node['subver'] ?></td>
+        <td><?= $node['banscore'] ?></td>
 
       </tr>
     <?php } ?>
